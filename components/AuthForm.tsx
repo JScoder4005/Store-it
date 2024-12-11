@@ -44,6 +44,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
       fullName: '',
       email: '',
     },
+    mode: 'onBlur',
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
