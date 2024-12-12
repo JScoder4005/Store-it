@@ -117,6 +117,7 @@ export const signOutUser = async () => {
   const { account } = await createSessionClient();
 
   try {
+    // delete the session from the database and redirecting the user to sign-in
     await account.deleteSession('current');
     (await cookies()).delete('appwrite-session');
   } catch (error) {
