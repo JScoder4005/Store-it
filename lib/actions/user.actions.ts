@@ -127,6 +127,7 @@ export const signOutUser = async () => {
   }
 };
 
+// SignIn user using OTP
 export const signInUser = async ({ email }: { email: string }) => {
   try {
     const existingUser = await getUserByEmail(email);
