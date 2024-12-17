@@ -1,6 +1,12 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // This is where you can add your custom server-side logic
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '100MB',
+    },
+  },
   // to render the images from third party libraries we use config like this as below.:
   images: {
     remotePatterns: [
