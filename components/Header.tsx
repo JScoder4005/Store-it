@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Search from './Search';
 import FileUploader from './FileUploader';
 import { signOutUser } from '@/lib/actions/user.actions';
+import { Sunrise } from 'lucide-react';
 
 const Header = ({
   userId,
@@ -18,6 +19,7 @@ const Header = ({
       <Search />
 
       <div className="header-wrapper">
+        {/* <Sunrise className="text-primary" /> */}
         {/* FileUploader */}
         <FileUploader ownerId={userId} accountId={accountId} />
 
