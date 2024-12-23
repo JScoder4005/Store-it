@@ -25,7 +25,11 @@ import Link from 'next/link';
 import { constructDownloadUrl } from '@/lib/utils';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { renameFile, updateFileUsers } from '@/lib/actions/file.actions';
+import {
+  deleteFile,
+  renameFile,
+  updateFileUsers,
+} from '@/lib/actions/file.actions';
 import { usePathname } from 'next/navigation';
 import { FileDetails, ShareInput } from '@/components/ActionsModalContent';
 
@@ -47,12 +51,14 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     // setEmail([])
   };
 
-  console.log({ updateFileUsers });
+  // console.log({ updateFileUsers });
+
   const handleAction = async () => {
     if (!action) return;
     setIsLoading(true);
 
     let success = false;
+    console.log(file);
     const actions = {
       rename: () =>
         renameFile({
@@ -67,7 +73,12 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           emails,
           path,
         }),
-      delete: () => console.log('delete'),
+      delete: () =>
+        deleteFile({
+          fileId: file.$id,
+          path,
+          bucketFileId: file.bucketFileId,
+        }),
     };
 
     // this way it knows it should be one of the actions...
@@ -78,7 +89,62 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     setIsLoading(false);
   };
 
-  const handelRemoveUser = () => {};
+  // const handleAction = async () => {
+  //   if (!action) return;
+  //   setIsLoading(true);
+
+  //   let success = false;
+  //   const actions = {
+  //     rename: () =>
+  //       renameFile({
+  //         fileId: file.$id,
+  //         name,
+  //         extension: file.extention,
+  //         path,
+  //       }),
+  //     share: () =>
+  //       updateFileUsers({
+  //         fileId: file.$id,
+  //         emails,
+  //         path,
+  //       }),
+  //     delete: async () => {
+  //       try {
+  //         const deleteSuccess = await deleteFile({
+  //           fileId: file.$id,
+  //           path,
+  //           bucketFileId: file.bucketFileID,
+  //         });
+  //         return deleteSuccess === 'success'; // Check for a valid success response
+  //       } catch (error) {
+  //         console.log('Error during file deletion:', error);
+  //         return false;
+  //       }
+  //     },
+  //   };
+
+  //   // Execute the corresponding action
+  //   success = await actions[action.value as keyof typeof actions]();
+
+  //   if (success) closeAllModals();
+
+  //   setIsLoading(false);
+  // };
+
+  const handelRemoveUser = async (email: string) => {
+    const updatedEmails = emails.filter((e) => e !== email);
+    // setEmails(updatedEmails);
+    const success = await updateFileUsers({
+      fileId: file.$id,
+      emails: updatedEmails,
+      path,
+    });
+
+    if (success) {
+      setEmails(updatedEmails);
+      closeAllModals();
+    }
+  };
   const renderDialogContent = () => {
     if (!action) return null;
 
@@ -106,8 +172,16 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
             />
           )}
 
+          {value === 'delete' && (
+            <p className="delete-confirmation">
+              Are you sure you want to delete{` `}
+              <span className="delete-file-name">{file.name}</span>?
+            </p>
+          )}
+
           {value === 'details' && <FileDetails file={file} />}
         </DialogHeader>
+
         {['rename', 'delete', 'share'].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row">
             <Button onClick={closeAllModals} className="modal-cancel-button">

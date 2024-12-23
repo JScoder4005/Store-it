@@ -175,6 +175,8 @@ export const deleteFile = async ({
 }: DeleteFileProps) => {
   const { databases, storage } = await createAdminClient();
 
+  console.log(fileId);
+  console.log(bucketFileId);
   try {
     const deletedFile = await databases.deleteDocument(
       appwriteConfig.databaseId,
