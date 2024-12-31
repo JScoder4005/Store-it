@@ -95,7 +95,7 @@ const Search = () => {
                 </li>
               ))
             ) : (
-              <p className="empty-result">No Files Found</p>
+              <p className="empty-result">No files Found</p>
             )}
           </ul>
         )}
